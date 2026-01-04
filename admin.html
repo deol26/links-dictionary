@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Add Links</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .auth-section {
+            background: #fff3cd;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+        }
+        .auth-section.authenticated {
+            background: #d4edda;
+        }
+        .token-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .token-input input {
+            flex: 1;
+        }
+        .output-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-top: 2rem;
+        }
+        .json-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .success-msg, .error-msg {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error-msg {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .instructions {
+            background: #e7f3ff;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        .instructions ol {
+            margin-left: 1.5rem;
+        }
+        .manual-steps {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🔐 Admin Panel</h1>
+            <p><a href="index.html">← Back to main site</a></p>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <div class="instructions">
+            <h3>📝 Quick Instructions</h3>
+            <ol>
+                <li>Fill out the form below with link details</li>
+                <li><strong>Easy Way:</strong> Enter your GitHub token and click "Auto-Publish to GitHub"</li>
+                <li><strong>Manual Way:</strong> Copy the generated JSON and paste it into links.json on GitHub</li>
+            </ol>
+        </div>
+
+        <div id="authSection" class="auth-section">
+            <h4>🔑 GitHub Authentication (Optional but Recommended)</h4>
+            <p>To automatically publish links, you need a GitHub Personal Access Token:</p>
+            <ol style="margin-left: 1.5rem; font-size: 14px;">
+                <li>Go to <a href="https://github.com/settings/tokens" target="_blank">GitHub Settings → Tokens</a></li>
+                <li>Click "Generate new token (classic)"</li>
+                <li>Select scope: <code>repo</code> (full control)</li>
+                <li>Copy the token and paste below</li>
+            </ol>
+            <div class="token-input">
+                <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                <button class="btn btn-secondary" onclick="saveToken()">Save Token</button>
+            </div>
+            <p style="margin-top: 0.5rem; font-size: 13px; color: #666;">
+                Token is stored locally in your browser. Configure repo in admin.js (lines 8-9).
+            </p>
+        </div>
+
+        <h2>Add New Link</h2>
+        
+        <form id="addLinkForm">
+            <div class="form-group">
+                <label for="title">Link Title *</label>
+                <input type="text" id="title" required placeholder="e.g., Amazing AI Tool Goes Viral">
+            </div>
+
+            <div class="form-group">
+                <label for="url">URL *</label>
+                <input type="url" id="url" required placeholder="https://example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" rows="3" placeholder="Brief description of the link (optional)"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category *</label>
+                <select id="category" required>
+                    <option value="">Select a category</option>
+                    <option value="news">News</option>
+                    <option value="videos">Videos</option>
+                    <option value="products">Products</option>
+                    <option value="social">Social Media</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags (comma-separated)</label>
+                <input type="text" id="tags" placeholder="AI, Technology, Viral">
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Generate JSON</button>
+                <button type="button" class="btn btn-success" onclick="autoPublish()" id="autoPublishBtn">
+                    🚀 Auto-Publish to GitHub
+                </button>
+            </div>
+        </form>
+
+        <div id="outputSection" class="output-section" style="display: none;">
+            <h3>📋 Generated JSON Code</h3>
+            <p>Copy this code and add it to your links.json file:</p>
+            <div class="json-output" id="jsonOutput"></div>
+            
+            <div class="manual-steps">
+                <h4>Manual Steps:</h4>
+                <ol style="margin-left: 1.5rem;">
+                    <li>Copy the JSON code above</li>
+                    <li>Go to your <a href="#" id="githubFileLink" target="_blank">links.json on GitHub</a></li>
+                    <li>Click "Edit" (pencil icon)</li>
+                    <li>Add the new entry after the opening <code>[</code> bracket</li>
+                    <li>Add a comma after the new entry</li>
+                    <li>Commit changes</li>
+                </ol>
+            </div>
+            
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="copyJSON()">📋 Copy JSON</button>
+                <button class="btn btn-secondary" onclick="resetForm()">➕ Add Another Link</button>
+            </div>
+        </div>
+
+        <div id="statusMessage"></div>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+</html>

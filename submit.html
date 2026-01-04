@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a Link - Link Directory</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>📤 Submit a Link</h1>
+            <p><a href="index.html">← Back to directory</a></p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="submit-container">
+            <h2>Two Ways to Submit</h2>
+            
+            <div class="submit-method">
+                <h3>Method 1: Quick Form</h3>
+                <p>Fill out the form below and we'll receive your submission via GitHub:</p>
+                
+                <form id="submitForm">
+                    <div class="form-group">
+                        <label for="title">Link Title *</label>
+                        <input type="text" id="title" required placeholder="e.g., Amazing AI Tool">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="url">URL *</label>
+                        <input type="url" id="url" required placeholder="https://example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="3" placeholder="Brief description of the link"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" required>
+                            <option value="">Select a category</option>
+                            <option value="news">News</option>
+                            <option value="videos">Videos</option>
+                            <option value="products">Products</option>
+                            <option value="social">Social Media</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tags">Tags (comma-separated)</label>
+                        <input type="text" id="tags" placeholder="AI, technology, viral">
+                    </div>
+
+                    <button type="submit" class="submit-btn">Generate GitHub Issue</button>
+                </form>
+
+                <div id="githubLink" style="display: none; margin-top: 20px;">
+                    <p class="success">✅ Click the button below to create a GitHub issue with your submission:</p>
+                    <a id="issueLink" href="#" target="_blank" class="github-btn">Open GitHub Issue</a>
+                </div>
+            </div>
+
+            <div class="submit-method">
+                <h3>Method 2: Direct Edit</h3>
+                <p>If you're familiar with GitHub, you can directly edit the links.json file:</p>
+                <ol>
+                    <li>Go to the <a href="https://github.com/YOUR-USERNAME/YOUR-REPO/blob/main/links.json" target="_blank">links.json file</a></li>
+                    <li>Click the "Edit" (pencil) icon</li>
+                    <li>Add your link following this format:</li>
+                </ol>
+                <pre><code>{
+  "title": "Your Link Title",
+  "url": "https://example.com",
+  "description": "Brief description",
+  "category": "news",
+  "tags": ["tag1", "tag2"],
+  "date": "2026-01-04"
+}</code></pre>
+                <p>Submit a pull request and we'll review it!</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Link Directory. <a href="index.html">Back to directory</a></p>
+        </div>
+    </footer>
+
+    <script src="submit.js"></script>
+</body>
+</html>
